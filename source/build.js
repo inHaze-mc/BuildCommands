@@ -74,6 +74,7 @@ var $base = {};
 var $debug = {};
 var $map = {};
 var $input = {};
+var $textBuilder = {};
 
 var $spc = checkSPC();
 
@@ -129,7 +130,113 @@ Toolkit.getDefaultToolkit().addAWTEventListener(new java.awt.event.AWTEventListe
 }, -1);
 
 
+var mcWrapper = function mcWrapper() {
+	this.world = null;
+	this.server = null;
+	this.player = null;
+	
+	mcWrapper.prototype.initialize = function initialize() {
+		
+		if ($spc != false) {
+			this.world = $spc.worldMC;
+			this.player = $spc.playerMC;
+			this.server = $spc.server;				
+		}
+		
+	};
+	
+	mcWrapper.prototype.displayGUIEditSign = function displayGUIEditSign(vec, txtAr) {
+		this.player.a(this.getTileEntity(vec));  // opens the sign gui screen from a tile entity
+	};
+	
+	mcWrapper.prototype.setSignText = function setSignText(vec, txtAr) {
+		this.getTileEntity(vec).a = txtAr;	//setting sign text on tile entity; doesn't update till chuck reload, or game
+	};
+	
+	mcWrapper.prototype.getTileEntity = function getTileEntity(vec) {
+		return this.world.r(java.lang.Integer(vec.getX()), java.lang.Integer(vec.getY()), java.lang.Integer(vec.getZ()));
+	};
+	
+	
+	this.initialize();
+	
+	/*	Test Ref
+	
+		//for (var qwerty = 0 ; qwerty < 100000; qwerty++) {
+			//player.print("ID = " + getFastBlockID(vec.add(0,0,0)));
+			//player.print("Data = " + getFastBlockData(vec.add(0,0,0)));
+			//var tblk = getBlock(vec).ID;
+			//var tbb = $spc.world.getBlockId(com.sijobe.spc.wrapper.Coordinate(vec.getX(), vec.getY(), vec.getZ()))
+			
+			// mc.d = is block a tile entity? (int,int,int);
+			// mc.g = block material type? maybe the chunk?
+			// mc.h = block metadata
+			// mc.i = set to air
+			// mc.l = block is a chest?
+			// mc.m = something, no idea
+			// mc.r = tile entity data! maybe... it is!
+			
+			
+			
+			var tile = ($spc.worldMC.r(java.lang.Integer(vec.getX()), java.lang.Integer(vec.getY()), java.lang.Integer(vec.getZ())));
+			
+			//tile.a(String("The precious"));			// set tile entity display name
+			//printDebug("tile", ObjToStr(tile));
+			//printDebug("printObject(tile, 2)", printObject(tile.class.methods[1], 3));
+			
+			var nbt = net.minecraft.src.NBTTagCompound; //("Text1");
+			var nbt2 = tile;
+			//var nbt3 =  nbt2.c;
+			stage = tile;
+			//var nbt4 = nbt3.toString();
+			//printDebug("$spc.worldMC", $spc.worldMC);
+			//printDebug("nbt", ObjToStr(nbt));
+			
+		
+			//$spc.worldMC.a(new java.lang.String("lava"), new java.lang.Double(String(vec.getX())), new java.lang.Double(String(vec.getY()+3)), new java.lang.Double(String(vec.getZ())), new java.lang.Double(String("0")), new java.lang.Double(String("1")), new java.lang.Double(String("0")));
+			//var tid = getFastBlockID(vec);
+			//var tdata = ("Data = " + getFastBlockData(vec.add(0,0,0)));
+	
+		$spc.player.addPotionEffect(1 ,5 * 20, 5);
+		
+		//printDebug("tmpMe.moveForwardField", ObjToStr(tmpMe.getClass().getCanonicalName()));
+		//mpMe.getClass.method[1]();
+		
+		//printDebug("tmpMe", printObject(tmpMe, 2));
+		//tmpMe.displayGUIChest($spc.player.getInventoryEnderChest());
+		//printDebug("tile", tile.getClass().getFields()[0]);
+		//printDebug("tile", ObjToStr(tile.a));
+		
+		
 
+		printDebug("tile.a", tile.a[0]);
+		return;
+		
+		tile.b();
+		//tile.c();
+		//tile.d();
+		tile.e();
+		tile.i();
+		tile.h();
+		tile.s();
+		tile.w_();
+		//tile.j();
+		//tile.k();
+		printDebug("tile.getClass().getMethods()", ObjToStr(tile.getClass().getMethods()));
+		//player.print("Total Time = " + (new Date().getTime()- timeStart));
+		//printDebug("tile.a ", tile.a[0]]); 
+			
+	
+	
+	
+	*/
+	
+}
+
+
+var mcw = new mcWrapper();
+mcw.setSignText(getTarget().vec, ["aaaa", "bbb", "cc", "d"]);
+mcw.displayGUIEditSign(getTarget().vec);
 
 
 var GlobalManager = new function GlobalManager() {
@@ -259,6 +366,29 @@ var ToolDouble = function ToolDouble () {
 
 var ToolBrush = function ToolBrush () {};
 
+
+
+/* //var BaseFrame = new JFrame() {
+var CaseFrame = function CaseFrame() {
+	CaseFrame.prototype = new JFrame();
+	this.globalId = '$case';
+	this.loader = CaseFrame;
+	this.obj = 0;
+	this.frame = 0;
+	this.initialize = function initialize(newTitle, newColor) {
+		//this.initializeBase(newTitle, newColor);
+		//this.initializeMain();
+		this.test();
+	};
+	this.test = function test() {
+		//player.print("CaseFrame = " + ObjToStr(this));
+		player.print("ObjToStr(this) = " +  ObjToStr(this));
+	}
+};
+
+var blah = new CaseFrame();
+
+blah.test(); */
 
 
 
@@ -649,8 +779,7 @@ var BaseFrame = function BaseFrame() {
 			this.addComp('baseTopGap', topSeperator);
 			this.centerFrame();
 			this.setTitle(this.title);
-			
-			//this.frame = frame;
+
 			this.obj = this;
 		}
 		catch(e) {
@@ -893,7 +1022,7 @@ var DebugFrame = function DebugFrame() {}; {
 	DebugFrame.prototype.contextHistory = [];
 	
 	DebugFrame.prototype.buildMain = function buildMain() {
-		
+		var timeStart = new Date().getTime();
 		var screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		var frameWidth = this.frame.getSize().getWidth();
 		var frameHeight = this.frame.getSize().getHeight();
@@ -1032,6 +1161,17 @@ var DebugFrame = function DebugFrame() {}; {
 					
 			}});	
 		
+		textPaneRight.addMouseListener(new java.awt.event.MouseListener(){		// right scroll pane - double click ; select / lookup word
+			mouseClicked: function(evt) {
+				var timeNow = new Date().getTime();
+				if (timeNow - timeStart < 200) {
+					var tmp = pointer.compList['debugRightText'].getSelectedText();
+					pointer.compList['debugCommandInput'].setText("?" + tmp);
+					//pointer.sendCommand();
+				}
+				timeStart = timeNow;
+			},
+		});	
 
 
 
@@ -1077,10 +1217,23 @@ var DebugFrame = function DebugFrame() {}; {
 		}
 	};
 	
-	DebugFrame.prototype.printRight = function printRight(str) {
+	DebugFrame.prototype.printRight = function printRight(str, color, newline) {
 		//player.print(">>>>>>>>>>>>>>>>>>>>>>>" + str + "<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-		var rightPane = this.compList['debugRightText'];
-		rightPane.setText(str + "\n" + rightPane.text );
+		
+		color = color instanceof Color == false ? Color.red : color; 		
+		newLine = typeof newLine == 'undefined' || newLine == true ? "\n" : ""; 
+		
+		var doc = this.compList['debugRightText'].getStyledDocument();
+		var style = this.compList['debugRightText'].addStyle("debugPrintStyle", null);
+		javax.swing.text.StyleConstants.setForeground(style, color);
+		
+		//javax.swing.text.StyleConstants.setBackground(style, windowColors['darkStrong']);
+		//javax.swing.text.StyleConstants.setSubscript(style, true);
+		
+		try { doc.insertString(0 /*doc.getLength()*/, str + newLine, style); } catch (e){}
+		
+		//var rightPane = this.compList['debugRightText'];
+		//rightPane.setText(str + newLine + rightPane.text );
 	};
 
 	DebugFrame.prototype.sendCommand = function sendCommand() {
@@ -1142,9 +1295,10 @@ var DebugFrame = function DebugFrame() {}; {
 	};
 
 	DebugFrame.prototype.sendContext = function sendContext(jStr) {
-		this.printRight("### Javascript File Finished");
+	
+		this.printRight("### Javascript File Finished", Color.red);
 		runJScript(jStr);
-		this.printRight("### Javascript File Ran: { " + jStr + " }");
+		this.printRight("### Javascript File Ran: { " + jStr + " }", Color.red);
 	};	
 }
 
@@ -1155,15 +1309,6 @@ var MapFrame = function MapFrame() {}; {
 	MapFrame.prototype.loader = MapFrame;	
 	MapFrame.prototype.title = "Map Viewer";
 	MapFrame.prototype.color = windowColors.darkStrong;
-	//MapFrame.prototype.allowResize = false;
-	//MapFrame.prototype.allowMinimize = false;
-	//MapFrame.prototype.allowFold = false;
-	//MapFrame.prototype.allowClose = false;
-	//MapFrame.prototype.allowTitle = false;
-	//MapFrame.prototype.allowTopGap = false;
-	//MapFrame.prototype.allowMove = false;
-	//MapFrame.prototype.topBarHeight = 0;
-	
 	MapFrame.prototype.imageObj = null;
 	MapFrame.prototype.arrowImage = null;
 	MapFrame.prototype.mapArray = null;
@@ -1792,19 +1937,20 @@ var InputFrame = function InputFrame() {}; {
 	InputFrame.prototype.bounds = {x:512, y:256, width:350, height:200};
 	InputFrame.prototype.buttonHeight = 24;
 	InputFrame.prototype.inputHeight = 24;
-	InputFrame.prototype.messageText = "Please input a value below. This is a really long question, what is your answer? Tell me!!";
+	InputFrame.prototype.messageText = "Please input a value below. This is a really long question, what is your answer? Tell me!!!\n \n ";
 	InputFrame.prototype.buttonText = ["Cancel", "Enter"];
 	InputFrame.prototype.callBackObject = null;
-	InputFrame.prototype.callBackFunction = null;	
+	InputFrame.prototype.callBack = null;	
 	InputFrame.prototype.messageSize = {};
 	
 	InputFrame.prototype.buildMain = function buildMain() {
 		
 		var pointer = this.obj;
 		
-		var labelMessage = new JLabel("Message", JLabel.LEFT);
+		var labelMessage = new JLabel("Message", JLabel.CENTER);
 		labelMessage.setFont(new Font("Trebuchet MS", Font.BOLD, 15));
 		labelMessage.setForeground(windowColors.white);
+		
 		//labelMessage.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 		labelMessage.setVerticalAlignment(SwingConstants.TOP)
 		
@@ -1857,8 +2003,16 @@ var InputFrame = function InputFrame() {}; {
 			},
 			keyReleased: function(evt) {
 
-				if (evt.getKeyCode() == 10) pointer.setMessage(pointer.compList['inputTextInput'].getText());		//Enter key
-
+				if (evt.getKeyCode() == 10) { 		//Enter key
+					var tmpStr = textCommandInput.getText();
+					printDebug("tmpStr", tmpStr);
+					//if (typeof tmpStr == 'undefined' || tmpStr == "") return;
+					
+					pointer.sendInput(pointer.compList['inputTextInput'].getText());
+					pointer.setMessage();
+					pointer.compList['inputTextInput'].setText("");
+				}
+				
 			},
 			keyTyped: function(evt) {
 				//pointer.printRight.call(pointer, "typed = " + evt);
@@ -1875,14 +2029,10 @@ var InputFrame = function InputFrame() {}; {
 		btnEnter.addActionListener(new java.awt.event.ActionListener() {
 			actionPerformed: function (evt) {
 				try {
-				
-					
-					
 					var g = btnCancel.getGraphics();
 					g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 					pointer.setMessage(pointer.compList['inputTextInput'].getText());
 					pointer.buildGameText(pointer.messageText);
-					
 					
 					g.setColor(Color.black);
 					g.fillOval(0,0,32,32);
@@ -1915,7 +2065,6 @@ var InputFrame = function InputFrame() {}; {
 		this.addComp('inputButtonCancel', btnCancel);		
 		this.addComp('inputButtonEnter', btnEnter);
 		this.compList['inputTextInput'].requestFocus();
-		//this.frame.pack();
 		
 		this.setMessage(this.messageText);
 		this.frame.repaint();
@@ -1925,145 +2074,160 @@ var InputFrame = function InputFrame() {}; {
 
 		var btnWidth = this.bounds.width * .35;
 		var btnPos = { cancel: this.bounds.width * .25 - btnWidth/2, enter: this.bounds.width * .75 - btnWidth/2 };
-		var msgHeight = 60;
 		
 		this.compList['inputTextScroll'].setBounds(this.frameBorder*4, this.bounds.height-this.frameBorder*8-this.inputHeight-this.buttonHeight,this.bounds.width - this.frameBorder*8, this.inputHeight);
 		this.compList['inputButtonCancel'].setBounds(btnPos.cancel, this.bounds.height-this.frameBorder*4-this.buttonHeight, btnWidth, this.buttonHeight);
 		this.compList['inputButtonEnter'].setBounds(btnPos.enter, this.bounds.height-this.frameBorder*4-this.buttonHeight, btnWidth, this.buttonHeight);
-		this.compList['inputMessage'].setBounds(this.frameBorder*4,this.topBarHeight+this.frameBorder*5,this.bounds.width-this.frameBorder*8, this.bounds.height-(this.frameBorder*9+this.inputHeight+this.buttonHeight+this.topBarHeight));
-		
+		this.compList['inputMessage'].setBounds(this.frameBorder*4,this.topBarHeight+this.frameBorder*3,this.bounds.width-this.frameBorder*8, this.bounds.height-(this.frameBorder*14+this.inputHeight+this.buttonHeight+this.topBarHeight));
+		this.setMessage(this.messageText);
 	};
 	
 	InputFrame.prototype.setMessage = function setMessage(msg) {
-
+		if (typeof msg == 'undefined') return;
 		this.messageText = msg;
-		var msgWidth = this.bounds.width - (this.frameBorder * 8);
+		var msgWidth = (this.bounds.width - (this.frameBorder * 8))*.78;
 		
 		var html1 = "<html><body style='width: ";
 		var html2 = "px'>";
 		
 		var htmlText = html1 + String(msgWidth) + html2 + msg;
-		
-		//JOptionPane.showMessageDialog(null, new JLabel(html1+"200"+html2+msg));
-		//JOptionPane.showMessageDialog(null, new JLabel(html1+"300"+html2+msg));		
-
+			
+		//this.fadeColor(this.compList['inputMessage'], this.compList['inputMessage'].setForeground, windowColors.clear, windowColors.white, 3000);
 		this.compList['inputMessage'].setText(htmlText);
 		
-		//var comStr = String(this.compList['debugCommandInput'].getText()).replace('\r', "").replace('\n', "");	
-		
-		var len = this.stringLength(msg, new Font("Trebuchet MS", Font.BOLD, 15));
-		player.print("total length = " + len);
-		newWidth = 5;
-		
+		//var comStr = String(this.compList['debugCommandInput'].getText()).replace('\r', "").replace('\n', "");		
 	
 	};
 	
-	InputFrame.prototype.setCallback = function setCallback(msg) { };
-
-	
-	InputFrame.prototype.buildGameText = function buildGameText(msg) {
-
-		var fontSize = 120;
-		var blackWool = new BaseBlock(35, 15); 
-		var edgeWool = new BaseBlock(159, 4); 
-		var air = new BaseBlock(0);
-		var thickness = 2;
-
-		// Test URL Font 
-		
-		//*
-		//var fontUrl = new URL("http://www.webpagepublicity.com/free-fonts/a/Airacobra%20Condensed.ttf");
-		//var font = Font.createFont(Font.TRUETYPE_FONT, fontUrl.openStream());
-		//var ge = GraphicsEnvironment.getLocalGraphicsEnvironment()
-		//var fonts = new JList( ge.getAvailableFontFamilyNames() );
-		//var obj = JOptionPane.showMessageDialog(null, new JScrollPane(fonts));	
-		//printDebug("obj", obj.getInputValue());
-		//*/
-		
-		// 2nd part Test
-		//
-		
-		
-		var urlFontList = [
-			new URL("http://www.webpagepublicity.com/free-fonts/a/Airacobra%20Condensed.ttf"),
-			new URL("http://www.webpagepublicity.com/free-fonts/a/Aramis%20Regular.ttf"),
-			new URL("http://www.webpagepublicity.com/free-fonts/c/Candice.ttf"),
-			new URL("http://www.webpagepublicity.com/free-fonts/h/Halter%20Antigenic.ttf"),
-			//new URL(""),
-			//new URL(""),
-			//new URL(""),
-			//new URL(""),
-			//new URL(""),
-		]
-		var font = Font.createFont(Font.TRUETYPE_FONT, urlFontList[3].openStream());
-		font = font.deriveFont(Font.PLAIN, fontSize);
-		GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
-		
-		//*/
-		
-		//var ll = new JLabel("The quick brown fox jumped over the lazy dog. 0123456789");
-		//ll.setFont(font);
-		//JOptionPane.showMessageDialog(null, ll);		
-		
-		// End Font Test
-		
-		//var font = new Font("Trebuchet MS", Font.PLAIN, 80)
-		var g = this.frame.getGraphics();
-		g.setFont(font);
-		var metrics = g.getFontMetrics(font);
-		var height = metrics.getHeight();	
-		var width = metrics.stringWidth(msg);
-		g.dispose();
-			
-		var img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);		
-		var g = img.getGraphics();
-		g.setFont(font);
-		g.setColor(Color.white);
-		g.fillRect(0,0,width, height);
-		g.setColor(Color.black);
-		g.drawString(msg, 0, height);
-		g.dispose();
-
-		var base = getTarget().vec.add(0,0,0);
-		//var base = tmp.add(width/2, 0, 0);
-		//base = base.add(-(width/2), 1, -(height/2));
-		
-		var edge = false;
-		for (var x = 0; x < width; x++) {
-			for (var y = height-1; y >= 0; y--) {
-				var clr = new Color(img.getRGB(x, height-1-y));
-				if(clr.getRed()< 250 && clr.getGreen() < 250 && clr.getBlue() < 250) {
-					//player.print("Setting a block ingame at: " + base.add(x, 0, y));
-					for (var z = 0; z < thickness; z++) setBlock(base.add(x, y, z), blackWool);
-					edge = true;
-				}
-				else if (edge == true) {
-					for (var z = 0; z < thickness; z++) setBlock(base.add(x, y, z), edgeWool);
-					edge = false;
-				}
-				else {
-					//for (var z = 0; z < thickness; z++) setBlock(base.add(x, y, z), air);
-				}
-			}
-		}
-		g.dispose();
-		
-		player.print("I actually made it on the first try");
+	InputFrame.prototype.setCallback = function setCallback(callBack) {
+		this.callBack = callBack;
 	
 	};
-		
 	
 	InputFrame.prototype.sendInput = function sendInput(msg) {
 		this.callback(msg)
-	}
-	
+	};
 
-	
 }
 
+var TextBuilderFrame = function TextBuilderFrame() {}; {
+	TextBuilderFrame.prototype = new InputFrame();
+	TextBuilderFrame.prototype.globalId = '$textBuilder';
+	TextBuilderFrame.prototype.loader = TextBuilderFrame;	
+	TextBuilderFrame.prototype.title = "Text Builder";
+	TextBuilderFrame.prototype.messageText = "Please input a value below. This is a really long question, what is your answer? Tell me!! Seriously, I need a really long test for this to work right, so I just need to keep on typing and not even think about what in the world I need to put down because it really doesn't matter like i said in the past you have to really live fast or you will die young. fine Done!\r\n\r\n Please input a value below. This is a really long question, what is your answer? Tell me!! Seriously, I need a really long test for this to work right, so I just need to keep on typing and not even think about what in the world I need to put down because it really doesn't matter like i said in the past you have to really live fast or you will die young. fine Done!\n\n";
+	TextBuilderFrame.prototype.buttonText = ["Cancel", "Enter"];
+	
+	this.fontBarHeight = 100;	
+	
+	TextBuilderFrame.prototype.sendInput = function sendInput(msg) {
+		this.setMessage(msg);
+		this.buildGameText(msg);
+		
+		//this.callback(msg);
+	};
+		
+	TextBuilderFrame.prototype.buildGameText = function buildGameText(msg) {
+		try {
+		
+			var fontSize = 75;
+			var blackWool = new BaseBlock(35, 15);  //black wool
+			var edgeWool = new BaseBlock(159, 4); 	//hardened clay
 
+			var blackWool = new BaseBlock(2, 0);  //black wool
+			var edgeWool = new BaseBlock(1, 0); 	//hardened clay
 
+			var edgeOffset = 1;
+			var air = new BaseBlock(0);
+			var thickness = 5;
 
+			/*	// Test URL Font 
+			var fontUrl = new URL("http://www.webpagepublicity.com/free-fonts/a/Airacobra%20Condensed.ttf");
+			var font = Font.createFont(Font.TRUETYPE_FONT, fontUrl.openStream());
+			var ge = GraphicsEnvironment.getLocalGraphicsEnvironment()
+			var fonts = new JList( ge.getAvailableFontFamilyNames() );
+			var obj = JOptionPane.showMessageDialog(null, new JScrollPane(fonts));	
+			printDebug("obj", obj.getInputValue());
+			*/
+			
+			var urlFontList = [
+				//new URL("http://www.webpagepublicity.com/free-fonts/a/Airacobra%20Condensed.ttf"),
+				//new URL("http://www.webpagepublicity.com/free-fonts/a/Aramis%20Regular.ttf"),
+				new URL("http://www.webpagepublicity.com/free-fonts/c/Candice.ttf"),
+				//new URL("http://www.webpagepublicity.com/free-fonts/h/Halter%20Antigenic.ttf"),
+				//new URL(""),
+				//new URL(""),
+				//new URL(""),
+				//new URL(""),
+				//new URL(""),
+			]
+			var font = Font.createFont(Font.TRUETYPE_FONT, urlFontList[0].openStream());
+			font = font.deriveFont(Font.PLAIN, fontSize);
+			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
+			
+			/*		Display Message Using the font
+			var ll = new JLabel("The quick brown fox jumped over the lazy dog. 0123456789");
+			ll.setFont(font);
+			//JOptionPane.showMessageDialog(null, ll);		
+			*/
+	
+			this.compList['inputMessage'].setFont(font);
+			var g = this.frame.getGraphics();
+			var metrics = g.getFontMetrics(font);
+			
+			var height = metrics.getStringBounds(msg, g).height*2;	
+			var width = metrics.getStringBounds(msg, g).width+2;
+			g.dispose();
+				
+			var img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);		
+			var g = img.getGraphics();
+			g.setFont(font);
+			g.setColor(Color.white);
+			g.fillRect(0,0,width, height);
+			g.setColor(Color.black);
+			g.drawString(msg, 1, height*.7);
+			g.dispose();
+			
+			var sides = [new Vector(1,0,0), new Vector(-1,0,0), new Vector(0,1,0), new Vector(0,-1,0)];
+			var base = getTarget().vec.add(0,0,0);
+			base = base.add(-(width/2), 5, 0);
+			
+			var edge = false;
+			for (var x = 0; x < width; x++) {
+				for (var y = height-1; y >= 0; y--) {
+					var clr = new Color(img.getRGB(x, (height-1)-y));
+					if(clr.getRed()< 250 && clr.getGreen() < 250 && clr.getBlue() < 250) {
+						for (var z = Math.max(0 - edgeOffset); z < thickness + edgeOffset; z++) setBlock(base.add(x, y, z), edgeWool);
+					}
+					else {
+						var edge = false;
+						for (var i in sides) {
+							try {
+								var tmpColor = new Color(img.getRGB(x+sides[i].x, height-1-y+sides[i].y));
+								if (tmpColor.getRed()< 250 && tmpColor.getGreen() < 250 && tmpColor.getBlue() < 250) {
+									edge = true;
+									for (var z = 0; z < thickness; z++) setBlock(base.add(x, y, z), blackWool);
+								}
+							}
+							catch(e) {
+								//this just seemed easier...
+							}		
+						}	
+						if (edge == false) {
+							for (var z = 0; z < thickness; z++) setBlock(base.add(x, y, z), airMat);
+						
+						}
+					}
+				}
+			}
+			//player.print(text.Gold + "Text Created!");
+		}
+		catch(e) {
+			printError("Text Gen", e);
+		}
+	};
+	
+}
 
 
 var MCFrame = function MCFrame() {}; {
@@ -2348,15 +2512,11 @@ if ($spc != false) {		//clean up with the frame holder class
 	$map = $map ? $map: new MapFrame();
 	saveGlobal("$map", $map);
 
-	$input = loadGlobal("$input");
-	$input = $input ? $input: new InputFrame();
-	saveGlobal("$input", $input);
-
+	$textBuilder = loadGlobal("$textBuilder");
+	$textBuilder = $textBuilder ? $textBuilder: new TextBuilderFrame();
+	saveGlobal("$textBuilder", $textBuilder);
 }
 
-
-
-var $mcTest = new MCFrame();
 
 main();
 
@@ -4057,6 +4217,7 @@ function checkSPC() {
 		spcObj.playerMC = spcObj.player.getMinecraftPlayer();
 		spcObj.world = spcObj.player.getWorld();
 		spcObj.worldMC = spcObj.world.getMinecraftWorld();
+		spcObj.server = com.sijobe.spc.wrapper.MinecraftServer.getMinecraftServer();
 		
 		return spcObj; 
 	}
@@ -4481,7 +4642,7 @@ function ObjToStr(obj, str) {
 	return tmp;
 }
 
-function debug(str, val) { $debug.printRight(("### " + str + " = {" + (String(val) == 'null' || String(val) == 'undefined' ? String(val) : val) + "}")); };
+function debug(str, val) { $debug.printRight(("### " + str + " = {" + (String(val) == 'null' || String(val) == 'undefined' ? String(val) : val) + "}"), Color.orange); };
 
 function printDebug(str, val) {
 	if ($debugMode) {
@@ -9791,9 +9952,9 @@ function BuildWindows(vec) {
 	//var tmpArg = checkFlag("#", 0);
 	//printDebug("tmpArg", tmpArg);
 	
-	//$debug = $debug.reload();
+	$debug = $debug.reload();
 	//$map = $map.reload();
-	$input = $input.reload();	
+	$textBuilder = $textBuilder.reload();	
 	//return;
 	
 	switch (checkFlag("#")) {
@@ -9879,6 +10040,37 @@ function BuildBlender(vec) {
 function BuildTest(vec) {
 	
 	try{
+		
+		
+		
+		var mcWrapper = function mcWrapper() {
+			this.world = null;
+			this.server = null;
+			this.player = null;
+			
+			mcWrapper.prototype.initialize = function initialize() {
+				
+				if ($spc != false) {
+					this.world = $spc
+					this.world = $spc
+					this.world = $spc				
+				}
+			};
+			
+			mcWrapper.prototype.displayGUIEditSign = function displayGUIEditSign(vec, searchSize) {
+				
+				this.player.a(tile);  // opens the sign gui screen from a tile entity
+				tile.a = ["It", "actually", "worked", "wow"]; //setting sign text on tile entity; doesn't update till chuck reload
+			};
+			
+			mcWrapper.prototype.setSignText = function setSignText(vec, txtAr) {
+			
+				$spc.worldMC				
+			
+			};
+			
+			this.initialize();
+		}		
 		
 		
 		//$map.initialize();
@@ -9993,6 +10185,9 @@ function BuildTest(vec) {
 		}, null, 100, 100);
 		
 		return;
+		
+		
+		
 		//print(searchObject(player, 3, "DOWN"));
 		//return;
 		
@@ -10042,13 +10237,7 @@ function BuildTest(vec) {
 			//$spc.worldMC.a(new java.lang.String("lava"), new java.lang.Double(String(vec.getX())), new java.lang.Double(String(vec.getY()+3)), new java.lang.Double(String(vec.getZ())), new java.lang.Double(String("0")), new java.lang.Double(String("1")), new java.lang.Double(String("0")));
 			//var tid = getFastBlockID(vec);
 			//var tdata = ("Data = " + getFastBlockData(vec.add(0,0,0)));
-
-		
-		var mcWrapper = function mcWrapper() {
-		
-		
-		}
-		
+	
 		$spc.player.addPotionEffect(1 ,5 * 20, 5);
 		
 		//printDebug("tmpMe.moveForwardField", ObjToStr(tmpMe.getClass().getCanonicalName()));
@@ -10060,8 +10249,7 @@ function BuildTest(vec) {
 		//printDebug("tile", ObjToStr(tile.a));
 		
 		
-		$spc.playerMC.a(tile);  // opens the sign gui screen from a tile entity
-		tile.a = ["It", "actually", "worked", "wow"]; //setting sign text on tile entity; doesn't update till reload
+
 		printDebug("tile.a", tile.a[0]);
 		return;
 		
